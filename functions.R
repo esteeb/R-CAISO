@@ -79,7 +79,7 @@ week_avgs <- function(data = NULL, start.date = as.Date("2020-05-01")) {
   avg_df <- as.data.frame(avg_df)
   avg_df <- cbind(all_years, avg_df)
   avg_df$all_years <- as.factor(avg_df$all_years)
-  colname(avg_df)[1] <- c("Year")
+  colnames(avg_df)[1] <- c("Year")
 
   tidy_avg_df <- melt(avg_df, id.vars = "Year")
   

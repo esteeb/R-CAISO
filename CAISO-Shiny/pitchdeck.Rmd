@@ -1,0 +1,33 @@
+---
+title: "Pitch Deck"
+author: "Erik Rehnberg Steeb"
+date: "8/7/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(png)
+```
+
+## CAISO Net Demand Data
+- This app shows the 7-day average net demand on the CAISO grid during three consecutive years, 2018, 2019, and 2020.
+- The app also indicates the mean of the max ramp rate of net demand in that 7-day window, as well as when that ramp occurs.
+
+
+## Applications
+
+- The app gives users an idea of the effects of COVID-19 related lockdowns on net demand on the California electric grid from April to July. 
+
+## Example Plot
+
+```{r plot}
+pp <- readPNG("Plot1.png")
+plot.new() 
+rasterImage(pp,0,0,1,1)
+
+```
+
+## Future Development
+
+I aim to further asses impacts on overall demand and CO2 emissions as well. 

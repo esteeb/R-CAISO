@@ -2,11 +2,9 @@
 
 # Libraries
 library(tidyverse)
-library(zoo)
 library(lubridate)
-library(fpp2)
 library(ggplot2)
-library(lattice)
+library(reshape2)
 
 # Read 
 eighteen_data <- read_in_data(eighteen_rel_dates)
@@ -24,3 +22,13 @@ data <- data[,1:290]
 rel_data <- data %>%
   filter(Type == "Net demand")
 
+ramps <- ramp_by_time(rel_data)
+ramps_safe <- ramps
+
+
+saveRDS(rel_data, file = "C:/Users/erikm/OneDrive/Documents/R Projects/R-CAISO/CAISO-shiny/shiny_datasets/rel_date.RDS")
+
+saveRDS(ramps, file = "C:/Users/erikm/OneDrive/Documents/R Projects/R-CAISO/CAISO-shiny/shiny_datasets/ramps.RDS")
+
+
+tidy_avg_df <- week_avgs(data = rel_data, start.date = "2020-07-01")

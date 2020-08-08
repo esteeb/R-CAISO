@@ -1,0 +1,12 @@
+name: CAISO-Shiny
+title: CAISO-shiny
+username:
+account: eriksteeb
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2651597
+bundleId: 3489481
+url: https://eriksteeb.shinyapps.io/caiso-shiny/
+when: 1596852800.61613
+asMultiple: FALSE
+asStatic: FALSE
