@@ -5,8 +5,8 @@ account: eriksteeb
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2651597
-bundleId: 3489481
+bundleId: 3489534
 url: https://eriksteeb.shinyapps.io/caiso-shiny/
-when: 1596852800.61613
+when: 1596854580.52527
 asMultiple: FALSE
 asStatic: FALSE

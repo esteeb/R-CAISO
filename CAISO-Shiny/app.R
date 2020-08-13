@@ -16,10 +16,64 @@ library(reshape2)
 library(chron)
 library(DT)
 
+# Define functions used by the app
+
+get_used_dates <- function(start.date = input$start.date) {
+    start.day <- lubridate::day(start.date)
+    start.month <- lubridate::month(start.date, label = FALSE)
+    year <- 2018
+    all_years <- c(2018:2020)
+    
+    for (year in all_years) {
+        first.day <- as.Date(
+            paste(year, start.month, start.day, sep = "-")
+        )
+        used.dates.yr <- seq(first.day, by = "day", length.out = 7)
+        used.dates <- c(used.dates, used.dates.yr)
+    }
+    used.dates
+}
+
+week_avgs <- function(data = NULL, start.date = input$start.date) {
+    start.day <- lubridate::day(start.date)
+    start.month <- lubridate::month(start.date, label = FALSE)
+    year <- 2018
+    all_years <- c(2018:2020)
+    avg_df <- NULL
+    
+    for (year in all_years) {
+        first.day <- as.Date(
+            paste(year, start.month, start.day, sep = "-")
+        )
+        used.dates.yr <- seq(first.day, by = "day", length.out = 7)
+        dates.df <- data %>%
+            filter(Date %in% used.dates.yr)
+        
+        # Remove first two columns to allow apply avgs function to work
+        dates.df <- dates.df[,3:ncol(dates.df)]
+        
+        new_avgs <- apply(dates.df, MARGIN = 2, FUN = mean)
+        
+        avg_df <- rbind(avg_df, new_avgs)
+        
+        
+    }
+    
+    avg_df <- as.data.frame(avg_df)
+    avg_df <- cbind(all_years, avg_df)
+    avg_df$all_years <- as.factor(avg_df$all_years)
+    colnames(avg_df)[1] <- c("Year")
+    
+    tidy_avg_df <- melt(avg_df, id.vars = "Year")
+    
+    tidy_avg_df
+    
+}
+
 rel_data <- readRDS("shiny_datasets/rel_data.RDS")
 ramps <- readRDS("shiny_datasets/ramps.RDS")
 
-
+used.dates <- NULL
 
 
 # Define UI for application that draws a histogram
@@ -62,59 +116,7 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    # Define week_avg function, which outputs the 7 day average beginning on start.date, across each of 3 years
-    
-    get_used_dates <- function(start.date = input$start.date) {
-        start.day <- lubridate::day(start.date)
-        start.month <- lubridate::month(start.date, label = FALSE)
-        year <- 2018
-        all_years <- c(2018:2020)
-        
-        for (year in all_years) {
-            first.day <- as.Date(
-                paste(year, start.month, start.day, sep = "-")
-            )
-            used.dates.yr <- seq(first.day, by = "day", length.out = 7)
-            used.dates <- c(used.dates, used.dates.yr)
-        }
-        used.dates
-    }
-    
-    week_avgs <- function(data = NULL, start.date = input$start.date) {
-        start.day <- lubridate::day(start.date)
-        start.month <- lubridate::month(start.date, label = FALSE)
-        year <- 2018
-        all_years <- c(2018:2020)
-        avg_df <- NULL
-        
-        for (year in all_years) {
-            first.day <- as.Date(
-                paste(year, start.month, start.day, sep = "-")
-            )
-            used.dates.yr <- seq(first.day, by = "day", length.out = 7)
-            dates.df <- data %>%
-                filter(Date %in% used.dates.yr)
-            
-            # Remove first two columns to allow apply avgs function to work
-            dates.df <- dates.df[,3:ncol(dates.df)]
-            
-            new_avgs <- apply(dates.df, MARGIN = 2, FUN = mean)
-            
-            avg_df <- rbind(avg_df, new_avgs)
-            
-            
-        }
-        
-        avg_df <- as.data.frame(avg_df)
-        avg_df <- cbind(all_years, avg_df)
-        avg_df$all_years <- as.factor(avg_df$all_years)
-        colnames(avg_df)[1] <- c("Year")
-        
-        tidy_avg_df <- melt(avg_df, id.vars = "Year")
-        
-        tidy_avg_df
-        
-    }
+
     
     output$distPlot <- renderPlot({
         # Do some basic loading and stuff
@@ -129,7 +131,7 @@ server <- function(input, output) {
     })
     
     output$table <- renderTable({
-        used.dates <- get_used_dates()
+        used.dates <- get_used_dates(start.date = input$start.date)
         ramps <- ramps %>%
             select(Date, Max.Time, Max)%>%
             filter(Date %in% used.dates)%>%
